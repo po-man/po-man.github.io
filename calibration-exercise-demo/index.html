@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Calibration Practice</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding-bottom: 50px; }
+h1 { text-align: center; }
+.question { padding: 10px; border-bottom: 1px solid #ddd; }
+label { margin-right: 10px; }
+button { padding: 10px 20px; margin-top: 20px; }
+table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+.hidden { display: none; }
+.error { color: red; font-weight: bold; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Calibration Practice — 40 True/False Questions</h1>
+
+<form id="quizForm">
+    <div id="questions"></div>
+    <div class="error hidden" id="errorMsg">Please answer all questions and choose confidence for each.</div>
+    <button type="button" onclick="calculateResults()">Submit Answers</button>
+</form>
+
+<div id="results" class="hidden">
+    <h2>Results</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Confidence Level</th>
+            <th>Correct</th>
+            <th>Incorrect</th>
+            <th>% Correct</th>
+        </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+    </table>
+    <button onclick="retakeQuiz()">Retake Quiz</button>
+</div>
+
+<script>
+let questions = [
+    { text: "In Java, <code>String</code> objects are immutable.", answer: true },
+    { text: "In Python, list comprehensions can include multiple <code>for</code> clauses.", answer: true },
+    { text: "In C++, <code>virtual</code> destructors are required if a class will be inherited from.", answer: true },
+    { text: "In JavaScript, <code>var</code> has block scope.", answer: false },
+    { text: "In Go, the <code>:=</code> syntax can be used to declare and assign variables at the same time.", answer: true },
+    { text: "In Rust, <code>match</code> statements must be exhaustive.", answer: true },
+    { text: "In C#, the <code>readonly</code> keyword can be applied to method parameters.", answer: false },
+    { text: "In Kotlin, <code>data class</code> automatically generates <code>toString()</code> and <code>equals()</code> methods.", answer: true },
+    { text: "In SQL, <code>NULL = NULL</code> evaluates to <code>TRUE</code>.", answer: false },
+    { text: "In PHP, array keys can be both strings and integers.", answer: true },
+    { text: "The Singleton pattern ensures only one instance of a class exists during runtime.", answer: true },
+    { text: "The Observer pattern is mainly used to decouple event producers from event consumers.", answer: true },
+    { text: "In REST API design, GET requests should modify server-side data.", answer: false },
+    { text: "Dependency Injection helps make code more testable and maintainable.", answer: true },
+    { text: "SOLID principles include “Single Responsibility” and “Liskov Substitution.”", answer: true },
+    { text: "The Repository pattern is used to abstract data access.", answer: true },
+    { text: "In microservices, synchronous communication is always preferred over asynchronous.", answer: false },
+    { text: "Domain-Driven Design emphasizes creating models that reflect business concepts.", answer: true },
+    { text: "The Strategy pattern is used to choose an algorithm’s behavior at runtime.", answer: true },
+    { text: "In MVC, the Controller is responsible for rendering the user interface.", answer: false },
+    { text: "In AWS, S3 offers object storage.", answer: true },
+    { text: "In Kubernetes, a Deployment manages ReplicaSets.", answer: true },
+    { text: "In Azure, “Blob” storage is for unstructured data.", answer: true },
+    { text: "In AWS, Lambda functions can only be triggered by API Gateway.", answer: false },
+    { text: "Kubernetes ConfigMaps are used to store sensitive information like passwords.", answer: false },
+    { text: "In GCP, BigQuery is a fully managed data warehouse.", answer: true },
+    { text: "AWS EC2 instances are serverless.", answer: false },
+    { text: "Kubernetes Services can load balance traffic to Pods.", answer: true },
+    { text: "AWS IAM roles can be assumed by AWS services.", answer: true },
+    { text: "In cloud computing, horizontal scaling means adding more powerful hardware.", answer: false },
+    { text: "Overfitting occurs when a model performs well on training data but poorly on unseen data.", answer: true },
+    { text: "Gradient descent is an optimization algorithm used to minimize loss functions.", answer: true },
+    { text: "In classification problems, recall measures the proportion of actual positives correctly identified.", answer: true },
+    { text: "In a confusion matrix, true negatives are cases where the model predicted negative and it was correct.", answer: true },
+    { text: "Regularization is used to prevent underfitting.", answer: false },
+    { text: "Dropout is a technique to prevent overfitting in neural networks.", answer: true },
+    { text: "In k-means clustering, k refers to the number of features in the dataset.", answer: false },
+    { text: "A decision tree can be used for both classification and regression tasks.", answer: true },
+    { text: "In reinforcement learning, the agent’s goal is to maximize cumulative reward.", answer: true },
+    { text: "PCA (Principal Component Analysis) is used to increase the dimensionality of data.", answer: false }
+];
+
+// Shuffle
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function populateQuestions() {
+    shuffle(questions);
+    const container = document.getElementById('questions');
+    container.innerHTML = "";
+    questions.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.innerHTML = `
+            <p><strong>Q${i+1}:</strong> ${q.text}</p>
+            <label><input type="radio" name="q${i}" value="true"> True</label>
+            <label><input type="radio" name="q${i}" value="false"> False</label>
+            &nbsp; Confidence:
+            <select name="conf${i}">
+                <option value="">--</option>
+                <option value="55">55%</option>
+                <option value="65">65%</option>
+                <option value="75">75%</option>
+                <option value="85">85%</option>
+                <option value="95">95%</option>
+            </select>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function calculateResults() {
+    const counts = { 55: {correct:0, incorrect:0}, 65:{correct:0, incorrect:0},
+                     75:{correct:0, incorrect:0}, 85:{correct:0, incorrect:0},
+                     95:{correct:0, incorrect:0} };
+    let allAnswered = true;
+    questions.forEach((q, i) => {
+        const ans = document.querySelector(`input[name=q${i}]:checked`);
+        const conf = document.querySelector(`select[name=conf${i}]`).value;
+        if (!ans || !conf) {
+            allAnswered = false;
+        } else {
+            const given = (ans.value === "true");
+            if (given === q.answer) {
+                counts[conf].correct++;
+            } else {
+                counts[conf].incorrect++;
+            }
+        }
+    });
+
+    if (!allAnswered) {
+        document.getElementById('errorMsg').classList.remove('hidden');
+        return;
+    } else {
+        document.getElementById('errorMsg').classList.add('hidden');
+    }
+
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = "";
+    for (let conf of [55,65,75,85,95]) {
+        const c = counts[conf].correct;
+        const inc = counts[conf].incorrect;
+        const total = c + inc;
+        const pct = total > 0 ? ((c / total) * 100).toFixed(1) : "-";
+        tbody.innerHTML += `<tr>
+            <td>${conf}%</td>
+            <td>${c}</td>
+            <td>${inc}</td>
+            <td>${pct}</td>
+        </tr>`;
+    }
+    document.getElementById('quizForm').classList.add('hidden');
+    document.getElementById('results').classList.remove('hidden');
+    window.scrollTo(0,document.body.scrollHeight);
+}
+
+function retakeQuiz() {
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('quizForm').classList.remove('hidden');
+    populateQuestions();
+}
+
+populateQuestions();
+</script>
+
+</body>
+</html>
