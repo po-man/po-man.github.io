@@ -9,6 +9,7 @@
  *   SHEET_ID       The spreadsheet that receives messages.
  *   NOTIFY_EMAIL   The private address that receives notifications.
  *   SITE_ORIGIN    Optional. For example, https://po-man.github.io
+ *   SENDER_NAME    Optional. Shown in the notification sender line.
  */
 
 var SHEET_NAME = "Messages";
@@ -200,13 +201,13 @@ function notify(message, data) {
     message.message
   ].join("\n");
 
-  var senderName = PropertiesService.getScriptProperties().getProperty("SENDER_NAME");
+  var senderName = PropertiesService.getScriptProperties().getProperty("SENDER_NAME") || "Field Notes";
 
   MailApp.sendEmail({
     to: notifyEmail,
     subject: "Field Notes contact: " + message.name,
     replyTo: message.email,
-    name: `${message.name} via ${senderName}`,
+    name: message.name + " via " + senderName,
     body: body
   });
 }

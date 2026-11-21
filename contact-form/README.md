@@ -13,6 +13,7 @@ The endpoint is not a secret. It is visible in the deployed JavaScript. Keep it 
 5. Open **Project Settings > Script properties** and add:
    - `NOTIFY_EMAIL`: the private address that receives notifications.
    - `SITE_ORIGIN`: `https://po-man.github.io`.
+   - `SENDER_NAME`: optional. Shown as "Name via SENDER_NAME" in the sender line. Defaults to `Field Notes`.
 6. The `SHEET_ID` property is set by `setup()`. Check it if you created the Sheet yourself.
 
 ## 2. Deploy the web app
