@@ -358,6 +358,7 @@
         '<p>The dashed line is perfect calibration. The oxide line follows your actual accuracy at each confidence level. Point size shows how many answers landed in that bin.</p>' +
         '<div class="plot-wrap">' + buildPlot(bins) + "</div>" +
         '<p class="plot-caption">A point above the dashed line means you were underconfident. A point below it means you were overconfident.</p>' +
+        '<p class="plot-caption">The useful rows below are the answers you were sure about and got wrong.</p>' +
       "</section>" +
       '<section class="results__section" aria-labelledby="table-heading">' +
         '<h3 id="table-heading">By confidence level</h3>' +
