@@ -200,10 +200,13 @@ function notify(message, data) {
     message.message
   ].join("\n");
 
+  var senderName = PropertiesService.getScriptProperties().getProperty("SENDER_NAME");
+
   MailApp.sendEmail({
     to: notifyEmail,
     subject: "Field Notes contact: " + message.name,
     replyTo: message.email,
+    name: `${message.name} via ${senderName}`,
     body: body
   });
 }
