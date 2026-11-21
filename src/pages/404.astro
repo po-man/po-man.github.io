@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import "../styles/site.css";
+---
+<Base
+  title="Not in the index, Po Man"
+  description="This page is not in the index."
+  path="/404.html"
+  noindex
+>
+<div class="page">
+    <div class="topbar">
+      <span class="mono">Field Notes</span>
+      <span class="mono topbar__right">Error / 404</span>
+    </div>
+    <main class="not-found">
+      <p class="eyebrow mono">No entry</p>
+      <h1>404</h1>
+      <p class="lede">This page is not in the index.</p>
+      <p class="not-found__links"><a href="/">Return to the index <span aria-hidden="true">→</span></a></p>
+    </main>
+  </div>
+</Base>

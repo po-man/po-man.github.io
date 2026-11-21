@@ -1,0 +1,59 @@
+---
+import { site } from "../lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  noindex?: boolean;
+  refresh?: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogTitle = title,
+  ogDescription = description,
+  noindex = false,
+  refresh,
+  bodyClass
+} = Astro.props;
+
+const canonical = new URL(path, site.url).toString();
+const ogImage = new URL("/assets/og.png", site.url).toString();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  {noindex && <meta name="robots" content="noindex">}
+  {refresh && <meta http-equiv="refresh" content={refresh}>}
+  <meta name="theme-color" content="#f3f0e7">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/newsreader-400-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <slot name="head" />
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={ogTitle}>
+  <meta property="og:description" content={ogDescription}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={ogImage}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={ogTitle}>
+  <meta name="twitter:description" content={ogDescription}>
+  <meta name="twitter:image" content={ogImage}>
+  <slot name="head" />
+</head>
+<body class={bodyClass}>
+  <slot />
+</body>
+</html>

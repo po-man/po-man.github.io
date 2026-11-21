@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+import "../../styles/site.css";
+---
+<Base
+  title="Calibration test has moved"
+  description="The calibration test has a new page."
+  path="/calibration-exercise-demo/"
+  noindex
+  refresh="0; url=/calibration/"
+>
+<div class="page">
+    <div class="topbar">
+      <span class="mono">Field Notes</span>
+      <span class="mono topbar__right">Moved</span>
+    </div>
+    <main class="not-found">
+      <p class="eyebrow mono">Field test / 01</p>
+      <h1>Moved</h1>
+      <p class="lede">The calibration test has a new page.</p>
+      <p class="not-found__links"><a href="/calibration/">Open the test <span aria-hidden="true">→</span></a></p>
+    </main>
+  </div>
+</Base>

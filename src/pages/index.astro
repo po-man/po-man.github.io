@@ -1,0 +1,515 @@
+---
+import Base from "../layouts/Base.astro";
+import { year } from "../lib/site";
+import "../styles/site.css";
+
+const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
+---
+<Base
+  title="Po Man, software engineer"
+  description="Side projects by Po Man, a software engineer in Hong Kong. Live tools and document pipelines, plus small games for animal welfare and food."
+  path="/"
+>
+<Fragment slot="head">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Po Man",
+    "alternateName": "po-man",
+    "url": "https://po-man.github.io/",
+    "jobTitle": "Software engineer",
+    "address": { "@type": "PostalAddress", "addressLocality": "Hong Kong" },
+    "sameAs": ["https://github.com/po-man"]
+  }
+  </script>
+</Fragment>
+<a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="page">
+    <div class="topbar">
+      <span class="mono">Field Notes</span>
+      <span class="mono topbar__right">Hong Kong / {year}</span>
+    </div>
+
+    <header class="masthead" id="top">
+      <div class="masthead__identity">
+        <p class="eyebrow mono">No. 00 / Masthead</p>
+        <h1>Po Man</h1>
+        <p class="handle mono">po-man</p>
+        <p class="role">Software engineer, Hong Kong.<br>Open to full-stack and AI application roles.</p>
+      </div>
+
+      <div class="masthead__intro">
+        <p class="lede">I build software for live rooms and messy documents. Sometimes I make games. Most of the work is for animal welfare and food.</p>
+        <p class="masthead__links">
+          <a href="https://github.com/po-man">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="#contact">Contact <span aria-hidden="true">↓</span></a>
+        </p>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="index" aria-labelledby="index-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">Index</span>
+            <span class="mono section-rail__note">07 entries</span>
+          </div>
+          <div class="section-body">
+            <h2 class="visually-hidden" id="index-title">Project index</h2>
+            <ol class="index-list">
+              <li>
+                <a href="#meerkat">
+                  <span class="index-no">01</span>
+                  <span class="index-name">Meerkat</span>
+                  <span class="index-thread">Systems</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">By request</span>
+                </a>
+              </li>
+              <li>
+                <a href="#mantis">
+                  <span class="index-no">02</span>
+                  <span class="index-name">Mantis</span>
+                  <span class="index-thread">Systems</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">Gallery</span>
+                </a>
+              </li>
+              <li>
+                <a href="#prism">
+                  <span class="index-no">03</span>
+                  <span class="index-name">Prism</span>
+                  <span class="index-thread">Systems</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">Reports</span>
+                </a>
+              </li>
+              <li>
+                <a href="#waste">
+                  <span class="index-no">04</span>
+                  <span class="index-name">Waste</span>
+                  <span class="index-thread">Products</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">Live</span>
+                </a>
+              </li>
+              <li>
+                <a href="#botanibowl">
+                  <span class="index-no">05</span>
+                  <span class="index-name">BotaniBowl</span>
+                  <span class="index-thread">Products</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">Live</span>
+                </a>
+              </li>
+              <li>
+                <a href="#hen-escape">
+                  <span class="index-no">06</span>
+                  <span class="index-name">Hen Escape</span>
+                  <span class="index-thread">Campaigns</span>
+                  <span class="index-year">2025</span>
+                  <span class="index-status">Live</span>
+                </a>
+              </li>
+              <li>
+                <a href="#rabbitry">
+                  <span class="index-no">07</span>
+                  <span class="index-name">Rabbitry</span>
+                  <span class="index-thread">Campaigns</span>
+                  <span class="index-year">2026</span>
+                  <span class="index-status">Live</span>
+                </a>
+              </li>
+            </ol>
+            <p class="index-foot mono">All seven entries are below. Status describes what is public, not what is finished.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="systems" aria-labelledby="systems-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">01</span>
+            <span class="mono section-rail__name">Systems</span>
+          </div>
+          <div class="section-body">
+            <header class="section-head">
+              <h2 id="systems-title">Systems</h2>
+              <p>Tools that move information between people and machines, usually under a time limit.</p>
+            </header>
+
+            <article class="project" id="meerkat">
+              <div class="project__meta">
+                <span class="mono">No. 01</span>
+                <span class="mono">2026</span>
+                <span class="status status--request">Demo by request</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Meerkat</h3>
+                  <p class="project__lede">Anonymous Q&amp;A for live rooms.</p>
+                  <p>The audience joins by QR and can ask or upvote without an account. The moderator watches the queue update live. Built on Phoenix LiveView and PubSub, with one lightweight BEAM process per listener.</p>
+                  <p>The public demo runs on a free tier, and room creation is closed. Request a walkthrough if you want to see the full flow.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>Each connected client gets a LiveView process on the server. PubSub broadcasts changes to the room, and the browser receives a diff over the existing connection. The demo runs on 1 vCPU and 256 MB of RAM, so it is tuned for small rooms.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build, deploy</dd></div>
+                    <div><dt>Stack</dt><dd>Elixir, Phoenix LiveView, PostgreSQL</dd></div>
+                    <div><dt>Links</dt><dd><a href="#contact" data-topic="meerkat">Request a walkthrough</a> <a href="https://github.com/po-man/meerkat">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--landscape plate__media--clip">
+                    <video class="plate__clip" poster="/assets/img/projects/meerkat/poster.webp" width="1280" height="720" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+                      <source src="/assets/video/meerkat.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption><span>Fig. 01</span> The audience joins by QR code, questions arrive, and upvotes reorder the queue. <button class="plate__toggle" type="button" data-clip-toggle hidden>Play</button></figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="project project--flip" id="mantis">
+              <div class="project__meta">
+                <span class="mono">No. 02</span>
+                <span class="mono">2026</span>
+                <span class="status status--offline">Gallery online</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Mantis</h3>
+                  <p class="project__lede">A photo of one object becomes a layered SVG, then a parallax scene.</p>
+                  <p>A stateless TypeScript service sends the image to a vision model and validates the SVG that comes back. Depth annotations inside the SVG drive a 2.5D parallax rig. The service caps concurrency and queues excess requests instead of letting them pile up.</p>
+                  <p>The gallery is online; the pipeline is not.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>Prompts are versioned as files, so changes can be compared. The rig is derived from depth annotations, not from a guess at runtime. The service is stateless, which keeps deployment simple.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build</dd></div>
+                    <div><dt>Stack</dt><dd>TypeScript, OpenRouter, SVG</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://po-man.github.io/mantis/">Gallery <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/mantis">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--landscape plate__media--dark plate__media--clip">
+                    <video class="plate__clip" poster="/assets/img/projects/mantis/poster.webp" width="1440" height="712" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+                      <source src="/assets/video/mantis.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption><span>Fig. 02</span> The parallax rig moving a layered SVG, then the public gallery. <button class="plate__toggle" type="button" data-clip-toggle hidden>Play</button></figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="project" id="prism">
+              <div class="project__meta">
+                <span class="mono">No. 03</span>
+                <span class="mono">2026</span>
+                <span class="status status--offline">Reports online</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Prism</h3>
+                  <p class="project__lede">Annual reports become comparable metrics.</p>
+                  <p>Animal charities publish reports as PDFs. Prism extracts financial and impact data from those documents and runs a deterministic audit over the result. The output is a public report card with citations back to the source.</p>
+                  <p>The extraction pipeline runs offline; the reports are online.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>The audit layer is separate from extraction. Every metric keeps a citation to the source document or web snippet, so a reader can check the claim. The public site is a static build.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build</dd></div>
+                    <div><dt>Stack</dt><dd>n8n, Gemini, Stirling PDF, Python, Hugo</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://po-man.github.io/prism/">Report cards <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/prism">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--landscape">
+                    <img src="/assets/img/projects/prism/cover.webp" width="1600" height="1000" alt="The Prism public directory, a table of animal charities with data source, beneficiary, cost, and audit columns." loading="lazy" decoding="async">
+                  </div>
+                  <figcaption><span>Fig. 03</span> The public directory. Each row links to a cited report card.</figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="products" aria-labelledby="products-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">02</span>
+            <span class="mono section-rail__name">Products</span>
+          </div>
+          <div class="section-body">
+            <header class="section-head">
+              <h2 id="products-title">Products</h2>
+              <p>Small tools made for specific people doing specific work.</p>
+            </header>
+
+            <article class="project project--stacked" id="waste">
+              <div class="project__meta">
+                <span class="mono">No. 04</span>
+                <span class="mono">2026</span>
+                <span class="status status--live">Live</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Waste <span class="project__zh" lang="zh-Hant">數海廢</span></h3>
+                  <p class="project__lede">A counting tool for beach clean-ups.</p>
+                  <p>It was built with the volunteers who run them. The interface assumes you are outdoors, counting with one hand while the other holds a bag. Counts stay on the device, and the event ends with a CSV export. The app is live in Chinese.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>Counts are stored in localStorage, so the app keeps working when the network drops. The export is a flat CSV that can be opened in a spreadsheet.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build</dd></div>
+                    <div><dt>Stack</dt><dd>TypeScript, Vite, localStorage</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://waste.plantbased.studio/">Open app <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/waste">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--auto">
+                    <img src="/assets/img/projects/waste/cover.webp" width="1166" height="1248" alt="The Waste counting screen beside its exported CSV, listing date, category, item counts, and bag weights." loading="lazy" decoding="async">
+                  </div>
+                  <figcaption><span>Fig. 04</span> The counting screen and the CSV it exports. Photographed from the live app.</figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="project project--flip" id="botanibowl">
+              <div class="project__meta">
+                <span class="mono">No. 05</span>
+                <span class="mono">2026</span>
+                <span class="status status--live">Live</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">BotaniBowl <span class="project__zh" lang="zh-Hant">揀飲擇植</span></h3>
+                  <p class="project__lede">A swiping game about nutrition and environmental budgets.</p>
+                  <p>Build a meal that meets a customer's nutrition targets without exceeding a water or land budget. The food data comes from OWID and the Hong Kong CFS. The customer is a cartoon; the numbers are not.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>Diner profiles generate calorie and macro targets. The game applies Atwater factors and checks the finished bowl against the environmental budgets.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build</dd></div>
+                    <div><dt>Stack</dt><dd>JavaScript, Vite, OWID, CFS</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://bowl.plantbased.studio/">Play <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/botanibowl">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate plate--portrait">
+                  <div class="plate__media plate__media--portrait plate__media--clip">
+                    <video class="plate__clip" poster="/assets/img/projects/botanibowl/poster.webp" width="720" height="1280" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+                      <source src="/assets/video/botanibowl.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption><span>Fig. 05</span> A round in progress: swipe a food, read the nutrition chart, serve the bowl. <button class="plate__toggle" type="button" data-clip-toggle hidden>Play</button></figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="campaigns" aria-labelledby="campaigns-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">03</span>
+            <span class="mono section-rail__name">Campaigns</span>
+          </div>
+          <div class="section-body">
+            <header class="section-head">
+              <h2 id="campaigns-title">Campaigns</h2>
+              <p>Games and websites made for a cause, with a small amount of mischief.</p>
+            </header>
+
+            <article class="project" id="hen-escape">
+              <div class="project__meta">
+                <span class="mono">No. 06</span>
+                <span class="mono">2025</span>
+                <span class="status status--live">Live</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Hen Escape <span class="project__zh" lang="zh-Hant">逃出蛋工廠</span></h3>
+                  <p class="project__lede">A one-button runner for a cage-free campaign.</p>
+                  <p>Made for Planet For All's Cage-Free Hong Kong campaign. It runs in the browser with no dependencies. The hidden scroll at the end leads to the petition.</p>
+                  <details class="note">
+                    <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
+                    <div class="note__body">
+                      <p>Obstacles are procedural, and the canvas adapts to portrait or landscape. A hidden scroll appears after a score threshold. The game was built with AI assistance.</p>
+                    </div>
+                  </details>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Build, with AI assistance</dd></div>
+                    <div><dt>Stack</dt><dd>HTML5 Canvas, vanilla JavaScript</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://hen-escape.github.io/">Play <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/hen-escape">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--landscape plate__media--dark plate__media--clip">
+                    <video class="plate__clip" poster="/assets/img/projects/hen-escape/poster.webp" width="1280" height="720" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1">
+                      <source src="/assets/video/hen-escape.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <figcaption><span>Fig. 06</span> The first run. The hidden scroll appears after a score threshold. <button class="plate__toggle" type="button" data-clip-toggle hidden>Play</button></figcaption>
+                </figure>
+              </div>
+            </article>
+
+            <article class="project project--flip" id="rabbitry">
+              <div class="project__meta">
+                <span class="mono">No. 07</span>
+                <span class="mono">2026</span>
+                <span class="status status--live">Live</span>
+              </div>
+              <div class="project__grid">
+                <div class="project__text">
+                  <h3 class="project__title">Rabbitry</h3>
+                  <p class="project__lede">A website for an animal campaign.</p>
+                  <p>It works better if you go in without context.</p>
+                  <dl class="facts">
+                    <div><dt>Role</dt><dd>Design, build, copy</dd></div>
+                    <div><dt>Stack</dt><dd>Astro</dd></div>
+                    <div><dt>Links</dt><dd><a href="https://www.lantaurabbit.com/">Visit site <span aria-hidden="true">↗</span></a> <a href="https://github.com/po-man/rabbitry">Source <span aria-hidden="true">↗</span></a></dd></div>
+                  </dl>
+                </div>
+                <figure class="plate">
+                  <div class="plate__media plate__media--landscape">
+                    <img src="/assets/img/projects/rabbitry/cover.webp" width="1600" height="1000" alt="A person holding a rabbit in a green field, photographed for the campaign site." loading="lazy" decoding="async">
+                  </div>
+                  <figcaption><span>Fig. 07</span> A still from the site.</figcaption>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section notes" id="notes" aria-labelledby="notes-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">04</span>
+            <span class="mono section-rail__name">Notes</span>
+          </div>
+          <div class="section-body">
+            <header class="section-head">
+              <h2 id="notes-title">Notes from the field</h2>
+            </header>
+
+            <div class="notes__grid">
+              <div class="notes__text">
+                <p>I work in AI, but the problem comes first. A charity report that has to become a number someone can compare, or a room where audience is shy to raise questions loudly. I do not build an app so that I can use a model. I use a model when the app needs one, and I keep the rest of the system simple enough to debug.</p>
+                <p>That is why the projects here look different from each other. The problem decides the stack. I am looking for a full-stack or AI application role where that is how the work gets scoped.</p>
+                <p class="mono notes__toolbox">Elixir / Phoenix LiveView / TypeScript / Python / PostgreSQL / Astro / n8n / OpenRouter</p>
+              </div>
+
+              <aside class="field-test" aria-labelledby="field-test-title">
+                <p class="mono field-test__label">Field test / 01</p>
+                <h3 id="field-test-title">Confidence and accuracy</h3>
+                <p>Twenty true or false questions. You set a confidence level for each answer. At the end you get a calibration curve and a Brier score. Nothing is stored.</p>
+                <a class="field-test__link" href="/calibration/">Take the test <span aria-hidden="true">→</span></a>
+                <svg class="field-test__plot" viewBox="0 0 220 120" aria-hidden="true" focusable="false">
+                  <path d="M20 100H205M20 100V10" fill="none" stroke="currentColor" stroke-width="1"/>
+                  <path d="M20 100L200 14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.45"/>
+                  <path d="M20 100L62 64L105 52L148 28L190 22" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+                  <circle cx="62" cy="64" r="3" fill="var(--accent)"/>
+                  <circle cx="105" cy="52" r="3.5" fill="var(--accent)"/>
+                  <circle cx="148" cy="28" r="4" fill="var(--accent)"/>
+                  <circle cx="190" cy="22" r="4.5" fill="var(--accent)"/>
+                </svg>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact" aria-labelledby="contact-title">
+        <div class="section-grid">
+          <div class="section-rail">
+            <span class="mono">05</span>
+            <span class="mono section-rail__name">Contact</span>
+          </div>
+          <div class="section-body">
+            <header class="section-head">
+              <h2 id="contact-title">Correspondence</h2>
+              <p>Send a message. It goes to me by email. Your details are used only to reply. I do not add you to a mailing list or share them. Messages are stored privately.</p>
+            </header>
+
+            <form class="contact-form" id="contact-form" novalidate>
+              <div class="field">
+                <label for="contact-name">Name</label>
+                <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="80" required>
+              </div>
+              <div class="field">
+                <label for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="120" required>
+              </div>
+              <div class="field">
+                <label for="contact-topic">What is this about?</label>
+                <select id="contact-topic" name="topic" required>
+                  <option value="role">A role</option>
+                  <option value="meerkat">Meerkat walkthrough</option>
+                  <option value="project">A project question</option>
+                  <option value="other">Something else</option>
+                </select>
+              </div>
+              <div class="field field--wide">
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" rows="7" maxlength="4000" required></textarea>
+              </div>
+
+              <div class="honeypot" aria-hidden="true">
+                <label for="contact-website">Website</label>
+                <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+              <input type="hidden" name="started_at" id="contact-started-at" value="">
+
+              <div class="contact-form__foot">
+                <button type="submit" class="button" id="contact-submit">Send message</button>
+                <p class="contact-form__note mono">The form needs JavaScript.</p>
+              </div>
+              <p class="form-status mono" id="form-status" role="status" aria-live="polite"></p>
+              <noscript><p class="form-status mono">Please enable JavaScript to use the contact form.</p></noscript>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__name">
+        <span class="mono">Po Man</span>
+        <span class="mono footer__handle">po-man</span>
+      </div>
+      <p class="footer__colophon">Field Notes, {year}. Set in Newsreader and IBM Plex Mono. Built with Astro.</p>
+      <div class="footer__links mono">
+        <a href="https://github.com/po-man">GitHub <span aria-hidden="true">↗</span></a>
+        <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+      </div>
+    </footer>
+  </div>
+
+  <script is:inline define:vars={{ endpoint }}>
+    window.SITE_CONFIG = { contactEndpoint: endpoint };
+  </script>
+  <script>
+    import "../scripts/site.js";
+  </script>
+</Base>

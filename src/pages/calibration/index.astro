@@ -1,0 +1,64 @@
+---
+import Base from "../../layouts/Base.astro";
+import "../../styles/site.css";
+import "../../styles/calibration.css";
+---
+<Base
+  title="Field test: confidence and accuracy, Po Man"
+  description="A twenty-question calibration test for software engineers. Set a confidence level for each answer and compare it with your accuracy."
+  path="/calibration/"
+  ogTitle="Field test: confidence and accuracy"
+  ogDescription="Twenty true or false questions. Set how sure you are. Get a calibration curve, a Brier score, and an explanation for every question."
+>
+<a class="skip-link" href="#quiz-view">Skip to the test</a>
+
+  <div class="page">
+    <div class="topbar">
+      <a class="mono topbar__home" href="/">Field Notes</a>
+      <span class="mono topbar__right">Field test / 01</span>
+    </div>
+
+    <header class="cal-header">
+      <div>
+        <p class="eyebrow mono">Field test / 01</p>
+        <h1>Confidence<br> and accuracy</h1>
+      </div>
+      <div class="cal-header__intro">
+        <p class="lede">Twenty true or false questions. For each answer, set how sure you are. At the end you get a calibration curve, a Brier score, and an explanation for every question.</p>
+        <p class="mono cal-header__note">About five minutes. Nothing is stored.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="quiz" id="quiz-view" tabindex="-1" aria-labelledby="quiz-title">
+        <h2 class="visually-hidden" id="quiz-title">Calibration test</h2>
+        <div class="quiz__top">
+          <p class="mono" id="progress-label">Question 1 of 20</p>
+          <div class="progress" id="progress" role="progressbar" aria-label="Test progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+            <span id="progress-bar"></span>
+          </div>
+        </div>
+
+        <div id="question-card"></div>
+
+        <div class="quiz__controls">
+          <button type="button" class="text-button" id="back">Back</button>
+          <button type="button" class="button" id="next" disabled>Next question</button>
+        </div>
+
+        <p class="quiz__hint mono">Keys: T or F to answer, 1 to 5 for confidence, Enter for next.</p>
+      </section>
+
+      <section class="results hidden" id="results-view" tabindex="-1" aria-labelledby="results-title"></section>
+    </main>
+
+    <footer class="cal-footer">
+      <p class="mono">Inspired by the calibration exercises in The Scout Mindset. Questions and scoring are original.</p>
+      <p class="mono"><a href="/">Back to Field Notes <span aria-hidden="true">→</span></a></p>
+    </footer>
+  </div>
+
+  <script>
+    import "../../scripts/calibration.js";
+  </script>
+</Base>
