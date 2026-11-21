@@ -13,6 +13,8 @@
 
 var SHEET_NAME = "Messages";
 var TOPICS = ["role", "meerkat", "project", "other"];
+var MIN_MESSAGE = 10;
+var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 var LIMITS = {
   name: 80,
   email: 120,
@@ -27,7 +29,7 @@ function doGet() {
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {
-      return out("error: invalid");
+      return out("error: rejected");
     }
 
     var data = JSON.parse(e.postData.contents);
@@ -45,23 +47,24 @@ function doPost(e) {
 
     var siteOrigin = PropertiesService.getScriptProperties().getProperty("SITE_ORIGIN");
     if (siteOrigin && String(data.origin || "") !== siteOrigin) {
-      return out("error: invalid");
+      return out("error: rejected");
     }
 
-    var message = validate(data);
-    if (!message) {
-      return out("error: invalid");
+    var result = validate(data);
+    if (!result.ok) {
+      return out("error: " + result.code);
     }
 
-    if (rateLimited(message)) {
-      return out("error: wait");
+    var wait = rateLimited(result.message);
+    if (wait) {
+      return out("error: " + wait);
     }
 
-    append(message, data);
+    append(result.message, data);
 
     // A failed notification should not lose the message that was already stored.
     try {
-      notify(message, data);
+      notify(result.message, data);
     } catch (error) {
       console.error(error);
     }
@@ -80,43 +83,65 @@ function validate(data) {
   var body = String(data.message || "").trim();
   var page = String(data.page || "").trim();
 
-  if (!name || name.length > LIMITS.name) return null;
-  if (!email || email.length > LIMITS.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
-  if (TOPICS.indexOf(topic) === -1) return null;
-  if (body.length < 10 || body.length > LIMITS.message) return null;
-  if (page.length > LIMITS.page) return null;
+  if (!name || name.length > LIMITS.name) {
+    return { ok: false, code: "name" };
+  }
+  if (!email || email.length > LIMITS.email || !EMAIL_PATTERN.test(email)) {
+    return { ok: false, code: "email" };
+  }
+  if (TOPICS.indexOf(topic) === -1) {
+    return { ok: false, code: "topic" };
+  }
+  if (body.length < MIN_MESSAGE) {
+    return { ok: false, code: "message_short" };
+  }
+  if (body.length > LIMITS.message) {
+    return { ok: false, code: "message_long" };
+  }
+  if (page.length > LIMITS.page) {
+    return { ok: false, code: "rejected" };
+  }
 
   return {
-    name: name,
-    email: email,
-    topic: topic,
-    message: body,
-    page: page
+    ok: true,
+    message: {
+      name: name,
+      email: email,
+      topic: topic,
+      message: body,
+      page: page
+    }
   };
 }
 
+/**
+ * Returns null when the message may be stored, or a code that names the
+ * limit that was hit.
+ */
 function rateLimited(message) {
   var cache = CacheService.getScriptCache();
-  var emailKey = "contact:email:" + message.email.toLowerCase();
-  if (cache.get(emailKey)) {
-    return true;
+  var emailHash = hash(message.email.toLowerCase());
+  var emailKey = "contact:email:" + emailHash;
+  var duplicateKey = "contact:hash:" + hash(message.email.toLowerCase() + "|" + message.message);
+
+  if (cache.get(duplicateKey)) {
+    return "duplicate";
   }
 
-  var duplicateKey = "contact:hash:" + hash(message.email.toLowerCase() + "|" + message.message);
-  if (cache.get(duplicateKey)) {
-    return true;
+  if (cache.get(emailKey)) {
+    return "throttled";
   }
 
   var minuteKey = "contact:minute:" + Math.floor(Date.now() / 60000);
   var count = Number(cache.get(minuteKey) || 0);
   if (count >= 8) {
-    return true;
+    return "busy";
   }
 
   cache.put(emailKey, "1", 600);
   cache.put(duplicateKey, "1", 600);
   cache.put(minuteKey, String(count + 1), 120);
-  return false;
+  return null;
 }
 
 function append(message, data) {

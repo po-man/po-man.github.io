@@ -92,6 +92,31 @@
     var topic = document.getElementById("contact-topic");
     var endpoint = window.SITE_CONFIG && window.SITE_CONFIG.contactEndpoint;
 
+    var MIN_MESSAGE = 10;
+    var MAX_MESSAGE = 4000;
+    var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    var ERROR_COPY = {
+      name: "Please add your name, 80 characters or fewer.",
+      email: "Please check your email address.",
+      topic: "Please choose a topic from the list.",
+      message_short: "Please write at least " + MIN_MESSAGE + " characters so I know what this is about.",
+      message_long: "That message is too long. Please keep it under " + MAX_MESSAGE + " characters.",
+      duplicate: "This looks like the message you just sent.",
+      throttled: "You sent a message recently. Please wait a few minutes before sending another.",
+      busy: "The server is busy right now. Please try again in a minute.",
+      rejected: "The message did not send. Please try again.",
+      server: "The message did not send. Please try again in a minute."
+    };
+
+    var ERROR_FIELDS = {
+      name: "contact-name",
+      email: "contact-email",
+      topic: "contact-topic",
+      message_short: "contact-message",
+      message_long: "contact-message"
+    };
+
     function setStatus(message, state) {
       status.textContent = message;
       if (state) {
@@ -99,6 +124,29 @@
       } else {
         delete status.dataset.state;
       }
+    }
+
+    function clearInvalid() {
+      form.querySelectorAll(".field--invalid").forEach(function (field) {
+        field.classList.remove("field--invalid");
+        var control = field.querySelector("input, select, textarea");
+        if (control) control.removeAttribute("aria-invalid");
+      });
+    }
+
+    function showError(code) {
+      setStatus(ERROR_COPY[code] || ERROR_COPY.server, "error");
+
+      var id = ERROR_FIELDS[code];
+      if (!id) return;
+
+      var control = document.getElementById(id);
+      if (!control) return;
+
+      var field = control.closest(".field");
+      if (field) field.classList.add("field--invalid");
+      control.setAttribute("aria-invalid", "true");
+      control.focus();
     }
 
     function resetClock() {
@@ -119,18 +167,32 @@
       });
     });
 
+    function preflight(payload) {
+      if (!payload.name || payload.name.length > 80) return "name";
+      if (!payload.email || payload.email.length > 120 || !EMAIL_PATTERN.test(payload.email)) return "email";
+
+      var allowedTopics = Array.prototype.map.call(topic.options, function (option) {
+        return option.value;
+      });
+      if (allowedTopics.indexOf(payload.topic) === -1) return "topic";
+
+      if (payload.message.length < MIN_MESSAGE) return "message_short";
+      if (payload.message.length > MAX_MESSAGE) return "message_long";
+      return null;
+    }
+
+    form.addEventListener("input", function (event) {
+      var field = event.target.closest(".field");
+      if (field && field.classList.contains("field--invalid")) {
+        field.classList.remove("field--invalid");
+        event.target.removeAttribute("aria-invalid");
+        if (status.dataset.state === "error") setStatus("", null);
+      }
+    });
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      if (!endpoint) {
-        setStatus("The form is not configured yet.", "error");
-        return;
-      }
+      clearInvalid();
 
       var data = new FormData(form);
       var payload = {
@@ -144,8 +206,14 @@
         page: window.location.pathname
       };
 
-      if (!payload.name || !payload.email || !payload.message) {
-        setStatus("Please fill in your name, email, and message.", "error");
+      var problem = preflight(payload);
+      if (problem) {
+        showError(problem);
+        return;
+      }
+
+      if (!endpoint) {
+        setStatus("The form is not configured yet.", "error");
         return;
       }
 
@@ -165,21 +233,18 @@
           if (text === "ok") {
             form.reset();
             resetClock();
+            clearInvalid();
             setStatus("Message sent. I will reply when I can.", "success");
             return;
           }
-          if (text === "error: wait") {
-            setStatus("Please wait a few minutes before sending another message.", "error");
+          if (text.indexOf("error: ") === 0) {
+            showError(text.slice(7).trim());
             return;
           }
-          if (text === "error: invalid") {
-            setStatus("Check the fields and try again.", "error");
-            return;
-          }
-          setStatus("The form had a problem. Try again in a minute.", "error");
+          showError("server");
         })
         .catch(function () {
-          setStatus("The message did not send. Try again in a minute.", "error");
+          setStatus("The message did not send. Check your connection and try again.", "error");
         })
         .finally(function () {
           submit.disabled = false;

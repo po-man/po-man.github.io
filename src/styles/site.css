@@ -757,6 +757,14 @@ textarea {
   text-transform: uppercase;
 }
 
+.field__hint {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
 .field input,
 .field select,
 .field textarea {
@@ -804,6 +812,17 @@ textarea {
 .field textarea:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+.field--invalid input,
+.field--invalid select,
+.field--invalid textarea {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.field--invalid label {
+  color: var(--accent-dark);
 }
 
 .contact-form__foot {
