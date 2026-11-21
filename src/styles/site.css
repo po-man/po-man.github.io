@@ -652,15 +652,19 @@ textarea {
   .plate__toggle {
     display: inline-flex;
     align-items: center;
-    min-height: 2.75rem;
-    margin-left: 0.2rem;
-    padding: 0 0.55rem;
-    border: 1px solid var(--rule-strong);
+    min-height: 2rem;
+    margin-left: 0.15rem;
+    padding: 0 0.25rem;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: var(--rule-strong);
   }
 
   .plate__toggle:hover,
   .plate__toggle:focus-visible {
-    border-color: var(--accent);
+    text-decoration-color: var(--accent);
   }
 }
 
@@ -673,6 +677,34 @@ textarea {
 
 .notes__text p {
   max-width: 54ch;
+}
+
+.notes__principle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: 2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.notes__principle:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.notes__principle span {
+  color: var(--accent);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.notes__principle + p {
+  margin-top: 0.7rem;
 }
 
 .notes__text p + p {

@@ -394,7 +394,7 @@
           }).join("") +
         "</div>" +
       "</section>" +
-      '<div class="results__actions"><button type="button" class="button" id="retake">Take it again</button><a class="text-button" href="/">Back to Field Notes</a></div>';
+      '<div class="results__actions"><button type="button" class="button" id="retake">Take it again</button></div>';
 
     resultsView.innerHTML = summary;
     quizView.classList.add("hidden");
