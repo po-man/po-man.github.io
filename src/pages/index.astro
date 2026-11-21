@@ -435,11 +435,11 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                 <svg class="field-test__plot" viewBox="0 0 220 120" aria-hidden="true" focusable="false">
                   <path d="M20 100H205M20 100V10" fill="none" stroke="currentColor" stroke-width="1"/>
                   <path d="M20 100L200 14" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity="0.45"/>
-                  <path d="M20 100L62 64L105 52L148 28L190 22" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-                  <circle cx="62" cy="64" r="3" fill="var(--accent)"/>
-                  <circle cx="105" cy="52" r="3.5" fill="var(--accent)"/>
-                  <circle cx="148" cy="28" r="4" fill="var(--accent)"/>
-                  <circle cx="190" cy="22" r="4.5" fill="var(--accent)"/>
+                  <path class="field-test__line" d="M20 100L62 64L105 52L148 28L190 22" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+                  <circle class="field-test__dot" cx="62" cy="64" r="3" fill="var(--accent)"/>
+                  <circle class="field-test__dot" cx="105" cy="52" r="3.5" fill="var(--accent)"/>
+                  <circle class="field-test__dot" cx="148" cy="28" r="4" fill="var(--accent)"/>
+                  <circle class="field-test__dot" cx="190" cy="22" r="4.5" fill="var(--accent)"/>
                 </svg>
               </aside>
             </div>

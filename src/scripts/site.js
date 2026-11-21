@@ -82,6 +82,127 @@
     });
   }
 
+  function initFieldTest() {
+    var plot = document.querySelector(".field-test__plot");
+    if (!plot || reduceMotion.matches) return;
+
+    var line = plot.querySelector(".field-test__line");
+    var dots = plot.querySelectorAll(".field-test__dot");
+    if (!line || !dots.length) return;
+
+    var variances = [12, 10, 13, 8];
+    var HOLD = 1000;
+    var MOVE = 400;
+
+    var points = Array.prototype.map.call(dots, function (dot, index) {
+      var y = parseFloat(dot.getAttribute("cy"));
+      return {
+        el: dot,
+        cx: dot.getAttribute("cx"),
+        baseY: y,
+        y: y,
+        variance: variances[index] || variances[variances.length - 1]
+      };
+    });
+
+    var timer = null;
+    var frame = null;
+    var inView = false;
+    var moveStart = 0;
+    var moves = [];
+
+    function updateLine() {
+      var d = "M20 100";
+      for (var i = 0; i < points.length; i++) {
+        var point = points[i];
+        d += "L" + point.cx + " " + point.y.toFixed(2);
+      }
+      line.setAttribute("d", d);
+    }
+
+    function ease(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function step(now) {
+      var t = Math.min((now - moveStart) / MOVE, 1);
+      var eased = ease(t);
+
+      for (var i = 0; i < moves.length; i++) {
+        var move = moves[i];
+        var point = move.point;
+        point.y = move.startY + (move.targetY - move.startY) * eased;
+        point.el.setAttribute("cy", point.y.toFixed(2));
+      }
+      updateLine();
+
+      if (t < 1) {
+        frame = window.requestAnimationFrame(step);
+      } else {
+        frame = null;
+        hold();
+      }
+    }
+
+    function move() {
+      timer = null;
+      moveStart = performance.now();
+      moves = [];
+      for (var i = 0; i < points.length; i++) {
+        var point = points[i];
+        moves.push({
+          point: point,
+          startY: point.y,
+          targetY: point.baseY + (Math.random() * 2 - 1) * point.variance
+        });
+      }
+      frame = window.requestAnimationFrame(step);
+    }
+
+    function hold() {
+      timer = window.setTimeout(move, HOLD);
+    }
+
+    function start() {
+      if (timer !== null || frame !== null) return;
+      hold();
+    }
+
+    function stop() {
+      if (timer !== null) {
+        window.clearTimeout(timer);
+        timer = null;
+      }
+      if (frame !== null) {
+        window.cancelAnimationFrame(frame);
+        frame = null;
+      }
+    }
+
+    function sync() {
+      if (inView && document.visibilityState !== "hidden") start();
+      else stop();
+    }
+
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            inView = entry.isIntersecting;
+            sync();
+          });
+        },
+        { rootMargin: "120px 0px" }
+      );
+      observer.observe(plot);
+    } else {
+      inView = true;
+      sync();
+    }
+
+    document.addEventListener("visibilitychange", sync);
+  }
+
   function initForm() {
     var form = document.getElementById("contact-form");
     if (!form) return;
@@ -252,6 +373,7 @@
     });
   }
 
+  initFieldTest();
   initClips();
   initForm();
 })();
