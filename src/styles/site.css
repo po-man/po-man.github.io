@@ -211,6 +211,15 @@ textarea {
   letter-spacing: -0.012em;
 }
 
+.masthead__note {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
 .masthead__links {
   display: flex;
   flex-wrap: wrap;
