@@ -59,6 +59,6 @@ The year in the masthead and colophon comes from `src/lib/site.ts` at build time
 
 GoatCounter is loaded in `src/layouts/Base.astro`, and `src/scripts/analytics.js` sends an event for every outbound link click. Relative in-site links and anchors are ignored. GoatCounter's default session handling means repeat clicks in one session count once.
 
-Each outbound link carries a `data-outbound` code that names its event (for example `ext-meerkat-src`, `ext-github-header`). Links without a code fall back to `ext-<host><path>`. The link text becomes the event title. Add a code to any new outbound link so it shows up under a readable name.
+Each outbound link carries a `data-outbound` code that names its event (for example `ext-meerkat-src`, `ext-github-header`). Links without a code fall back to `ext-<host><path>`. The link text becomes the event title. Add a code to any new outbound link so it shows up under a readable name, and include `target="_blank" rel="noopener noreferrer"` so it opens in a new tab.
 
 Campaign links such as `/?campaign=resume&ref=cv` are tracked by GoatCounter automatically; the tracking parameters are removed from the address bar once the pageview has been sent, and the canonical URL keeps the page path at `/`.
