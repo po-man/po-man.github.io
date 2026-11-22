@@ -470,7 +470,8 @@ textarea {
 
 .note {
   margin-top: 1.5rem;
-  border-top: 1px solid var(--rule);
+  padding-left: 1rem;
+  border-left: 2px solid var(--ink);
 }
 
 .note summary {
@@ -485,6 +486,7 @@ textarea {
   letter-spacing: 0.1em;
   list-style: none;
   text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .note summary::-webkit-details-marker {
@@ -511,6 +513,30 @@ textarea {
   color: var(--ink-soft);
   font-size: 1rem;
   line-height: 1.55;
+}
+
+/* Animate the disclosure with grid rows; the animation is an enhancement, so
+   browsers without ::details-content simply open and close as usual. */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    .notes-ready .note::details-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      overflow: clip;
+      transition:
+        grid-template-rows 240ms ease,
+        content-visibility 240ms ease allow-discrete;
+    }
+
+    .notes-ready .note[open]::details-content {
+      grid-template-rows: 1fr;
+    }
+
+    .note__body {
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
 }
 
 .facts {
@@ -573,6 +599,36 @@ textarea {
   height: 100%;
   object-fit: cover;
   background: var(--paper-deep);
+}
+
+.plate__media[role="button"] {
+  position: relative;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.plate__media[role="button"]::after {
+  content: "Expand";
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  pointer-events: none;
+}
+
+.plate__media[role="button"]:hover::after,
+.plate__media[role="button"]:focus-visible::after {
+  opacity: 1;
 }
 
 .plate__media--dark video {
@@ -989,6 +1045,94 @@ textarea {
   text-transform: uppercase;
 }
 
+.lightbox {
+  padding: 0;
+  border: 1px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  max-width: 96vw;
+  max-height: 96vh;
+}
+
+.lightbox::backdrop {
+  background: rgba(24, 23, 18, 0.25);
+}
+
+.lightbox__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.lightbox__stage img,
+.lightbox__stage video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 96vw;
+  max-height: 82vh;
+  object-fit: contain;
+}
+
+.lightbox__caption {
+  max-width: 96vw;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox__close:hover,
+.lightbox__close:focus-visible {
+  background: var(--ink);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox[open] {
+    animation: lightbox-in 180ms ease;
+  }
+
+  .lightbox[open]::backdrop {
+    animation: lightbox-backdrop 180ms ease;
+  }
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes lightbox-backdrop {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 980px) {
   .masthead {
     grid-template-columns: 1fr;
@@ -1229,6 +1373,20 @@ textarea {
   .plate__media--clip,
   .plate__toggle {
     display: none;
+  }
+
+  .lightbox {
+    display: none !important;
+  }
+
+  .note::details-content {
+    display: block !important;
+    grid-template-rows: none !important;
+    overflow: visible !important;
+  }
+
+  .note__body {
+    overflow: visible !important;
   }
 
   a {

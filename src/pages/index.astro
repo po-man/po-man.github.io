@@ -153,7 +153,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <p class="project__lede">Anonymous Q&amp;A for live rooms.</p>
                   <p>The audience joins by QR and can ask or upvote without an account. The moderator reads the live queue and passes questions to the speakers. Built on Phoenix LiveView and PubSub.</p>
                   <p>The public demo runs on a free tier, and room creation is closed. Request a walkthrough if you want to see the full flow.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>Each connected client gets a LiveView process on the server. PubSub broadcasts changes to the room, and the browser receives a diff over the existing connection. The demo runs on 1 vCPU and 256 MB of RAM, so it is tuned for small rooms.</p>
@@ -188,7 +188,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <p class="project__lede">A photo of one object becomes a layered SVG, then a parallax scene.</p>
                   <p>A stateless TypeScript service sends the image to a vision model and validates the SVG that comes back. Depth annotations inside the SVG drive a 2.5D parallax rig.</p>
                   <p>The gallery is online; the pipeline is not.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>Prompts are versioned as files, so changes can be compared. The rig is derived from depth annotations, not from a guess at runtime. The service is stateless, which keeps deployment simple.</p>
@@ -223,7 +223,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <p class="project__lede">Annual reports become comparable metrics.</p>
                   <p>Animal charities publish reports as PDFs. Prism extracts financial and impact data from those documents and runs a deterministic audit over the result. The output is a public report card with citations back to the source.</p>
                   <p>The extraction pipeline runs offline; the reports are online.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>The audit layer is separate from extraction. Every metric keeps a citation to the source document or web snippet, so a reader can check the claim. The public site is a static build.</p>
@@ -270,7 +270,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <h3 class="project__title">Waste <span class="project__zh" lang="zh-Hant">數海廢</span></h3>
                   <p class="project__lede">A counting tool for beach clean-ups.</p>
                   <p>It was built with the volunteers who run them. The interface assumes you are outdoors, counting with one hand while the other holds a bag. Counts stay on the device, and the event ends with a CSV export.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>Counts are stored in localStorage, so the app keeps working when the network drops. The export is a flat CSV that can be opened in a spreadsheet.</p>
@@ -303,7 +303,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <p class="project__lede">A swiping game about nutrition and environmental budgets.</p>
                   <p>Build a meal that meets a customer's nutrition targets without exceeding a water or land budget. The food data comes from OWID and the Hong Kong CFS.</p>
                   <p>The customer is a cartoon; the numbers are not.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>Diner profiles generate calorie and macro targets. The game applies Atwater factors and checks the finished bowl against the environmental budgets.</p>
@@ -352,7 +352,7 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                   <h3 class="project__title">Hen Escape <span class="project__zh" lang="zh-Hant">逃出蛋工廠</span></h3>
                   <p class="project__lede">A dino-style runner for a cage-free campaign.</p>
                   <p>Made for Planet For All's <a href="https://www.planet4all.org/cage-free-hk-all" target="_blank" rel="noopener noreferrer" data-outbound="ext-hen-escape-campaign">Cage-Free Hong Kong</a> campaign. It runs in the browser with no dependencies. The hidden scroll at the end leads to the petition.</p>
-                  <details class="note">
+                  <details class="note" open>
                     <summary>Engineering note <span class="note__mark" aria-hidden="true">+</span></summary>
                     <div class="note__body">
                       <p>Obstacles are procedural, and the canvas adapts to portrait or landscape. A hidden scroll appears after a score threshold. What I like the most is the parallax background.</p>
@@ -403,6 +403,19 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
           </div>
         </div>
       </section>
+
+      <script is:inline>
+        (function () {
+          if (window.matchMedia("(max-width: 700px)").matches) {
+            document.querySelectorAll("details.note").forEach(function (note) {
+              note.removeAttribute("open");
+            });
+          }
+          window.addEventListener("load", function () {
+            document.documentElement.classList.add("notes-ready");
+          });
+        })();
+      </script>
 
       <section class="section notes" id="notes" aria-labelledby="notes-title">
         <div class="section-grid">
@@ -500,6 +513,14 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
         </div>
       </section>
     </main>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Figure">
+      <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="lightbox__stage" data-lightbox-stage></div>
+      <p class="lightbox__caption" data-lightbox-caption hidden></p>
+    </dialog>
 
     <footer class="footer">
       <div class="footer__name">
