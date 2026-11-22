@@ -1150,12 +1150,21 @@ textarea {
   }
 
   .section-rail {
-    position: static;
+    position: sticky;
+    top: 0;
+    z-index: 5;
     flex-direction: row;
     gap: 0.8rem;
-    padding-top: 0;
-    padding-bottom: 0.8rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  /* Clear the pinned rail when an in-page anchor jumps to a section or project. */
+  .section,
+  .project {
+    scroll-margin-top: 3rem;
   }
 
   .section-head {
