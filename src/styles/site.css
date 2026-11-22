@@ -283,6 +283,12 @@ textarea {
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
+/* A heading without an intro line gets the full row, so an empty second
+   column cannot squeeze it into an unintended wrap. */
+.section-head:has(> h2:only-child) {
+  grid-template-columns: 1fr;
+}
+
 .section-head h2 {
   font-size: clamp(2.4rem, 5vw, 3.9rem);
   line-height: 0.95;
