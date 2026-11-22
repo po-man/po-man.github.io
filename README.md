@@ -18,11 +18,18 @@ npm run preview
 
 ## Deployment
 
-The site publishes from `main` through `.github/workflows/pages.yml`.
+The site publishes through `.github/workflows/pages.yml`, which runs when a tag matching `release.*` is pushed.
 
 1. In the repository settings, set Pages to deploy from GitHub Actions.
 2. Add a repository variable named `CONTACT_FORM_ENDPOINT` with the Apps Script web app URL. The workflow fails if it is missing.
-3. Push to `main` or run the workflow manually.
+3. Push a release tag, or run the workflow manually:
+
+   ```sh
+   git tag release.1
+   git push origin release.1
+   ```
+
+   Pushing to `main` no longer deploys on its own.
 
 The workflow runs `npm ci` and `npm run build`, then uploads `dist/`. The endpoint is injected at build time from the repository variable, so it never enters the source tree.
 
