@@ -302,7 +302,7 @@
         '<title id="plot-title">Calibration curve</title>' +
         '<desc id="plot-desc">Stated confidence on the horizontal axis and actual accuracy on the vertical axis. The dashed line is perfect calibration.</desc>' +
         grid +
-        '<line x1="' + x(50) + '" y1="' + y(0) + '" x2="' + x(100) + '" y2="' + y(100) + '" stroke="#181712" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>' +
+        '<line x1="' + x(50) + '" y1="' + y(50) + '" x2="' + x(100) + '" y2="' + y(100) + '" stroke="#181712" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>' +
         (linePoints ? '<polyline points="' + linePoints + '" fill="none" stroke="#b23a22" stroke-width="1.5"/>' : "") +
         points +
         '<text x="' + (left + plotWidth / 2) + '" y="' + (height - 10) + '" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6c675b">STATED CONFIDENCE</text>' +
