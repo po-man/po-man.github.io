@@ -25,6 +25,7 @@ const {
 
 const canonical = new URL(path, site.url).toString();
 const ogImage = new URL("/assets/og.png", site.url).toString();
+const goatcounter = "https://po-man.goatcounter.com/count";
 ---
 
 <!DOCTYPE html>
@@ -52,7 +53,54 @@ const ogImage = new URL("/assets/og.png", site.url).toString();
   <meta name="twitter:description" content={ogDescription}>
   <meta name="twitter:image" content={ogImage}>
   <slot name="head" />
-  <script data-goatcounter="https://po-man.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <script is:inline define:vars={{ goatcounter }}>
+    (function () {
+      var url = new URL(window.location.href);
+      var keys = ["ref", "src", "source", "campaign", "utm_source", "utm_campaign", "utm_medium", "utm_term", "utm_content"];
+      var dirty = false;
+      keys.forEach(function (key) {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          dirty = true;
+        }
+      });
+      if (!dirty) return;
+
+      var clean = url.pathname + (url.search || "") + url.hash;
+      var done = false;
+      var strip = function () {
+        if (done) return;
+        done = true;
+        window.history.replaceState(window.history.state, "", clean);
+      };
+
+      // Strip only after GoatCounter has captured location.search, so the
+      // campaign survives while the address bar stays clean.
+      if (window.navigator && window.navigator.sendBeacon) {
+        var beacon = window.navigator.sendBeacon.bind(window.navigator);
+        window.navigator.sendBeacon = function (target, data) {
+          var ok = beacon(target, data);
+          if (typeof target === "string" && target.indexOf(goatcounter) === 0) strip();
+          return ok;
+        };
+      }
+
+      // Fallback for browsers without sendBeacon; only strip once visible.
+      var fallback = function () {
+        if (document.visibilityState === "visible") strip();
+        else
+          document.addEventListener(
+            "visibilitychange",
+            function () {
+              if (document.visibilityState === "visible") strip();
+            },
+            { once: true }
+          );
+      };
+      window.addEventListener("load", fallback);
+    })();
+  </script>
+  <script data-goatcounter={goatcounter} async src="//gc.zgo.at/count.js"></script>
 </head>
 <body class={bodyClass}>
   <slot />
