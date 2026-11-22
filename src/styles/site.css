@@ -31,6 +31,7 @@
   --page-max: 1300px;
   --rail: 7.5rem;
   --gutter: clamp(1rem, 3vw, 2.5rem);
+  --section-pad: clamp(3.5rem, 7vw, 5.5rem);
 }
 
 *,
@@ -242,8 +243,11 @@ textarea {
 }
 
 .section {
-  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  padding-block: var(--section-pad);
   border-bottom: 1px solid var(--rule-strong);
+  /* Land an in-page jump on the section's content: on small screens this puts
+     the pinned rail at the top, on desktop it puts the heading there. */
+  scroll-margin-top: calc(-1 * var(--section-pad));
 }
 
 .section-grid {
@@ -1161,10 +1165,15 @@ textarea {
     background: var(--paper);
   }
 
-  /* Clear the pinned rail when an in-page anchor jumps to a section or project. */
-  .section,
+  /* Clear the pinned rail when an in-page anchor jumps to a project. */
   .project {
     scroll-margin-top: 3rem;
+  }
+
+  /* Let the last section always be scrolled to the top, so a jump to Contact
+     never leaves the previous section's rail pinned on tall viewports. */
+  .contact {
+    min-height: calc(100vh - 4rem);
   }
 
   .section-head {
