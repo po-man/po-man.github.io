@@ -56,5 +56,8 @@ const ogImage = new URL("/assets/og.png", site.url).toString();
 </head>
 <body class={bodyClass}>
   <slot />
+  <script>
+    import "../scripts/analytics.js";
+  </script>
 </body>
 </html>

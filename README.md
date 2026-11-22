@@ -44,7 +44,7 @@ src/pages/404.astro        Not-found page
 src/pages/calibration-exercise-demo/
                            Redirect to /calibration/
 src/styles/                Site and calibration styles, bundled by Vite
-src/scripts/               Contact form, clip behaviour, calibration logic
+src/scripts/               Contact form, clip behaviour, calibration, analytics
 public/                    Fonts, images, video, favicon, robots, sitemap
 contact-form/              Apps Script endpoint and deployment notes
 ```
@@ -54,3 +54,7 @@ contact-form/              Apps Script endpoint and deployment notes
 Project entries live in `src/pages/index.astro`. Each entry has a catalogue line, a short description, an optional engineering note, a facts list, and a figure. The calibration questions live in `src/scripts/calibration.js`.
 
 The year in the masthead and colophon comes from `src/lib/site.ts` at build time. Project years are written in the entries.
+
+## Analytics
+
+GoatCounter is loaded in `src/layouts/Base.astro`, and `src/scripts/analytics.js` sends an event for every outbound link click. Events are named `ext-<host>` (for example `ext-github.com`), with the link text as the title. Relative in-site links and anchors are ignored. GoatCounter's default session handling means repeat clicks in one session count once.
