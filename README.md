@@ -1,6 +1,6 @@
 # Field Notes
 
-A personal page for side projects by Po Man. Astro builds the static site, and a small script enhances the contact form and project clips.
+A personal page for side projects by Po Man. Astro builds the static site, and a small script enhances the contact form, the project clips, the engineering notes, and the figure lightbox.
 
 ## Local development
 
@@ -59,6 +59,10 @@ contact-form/              Apps Script endpoint and deployment notes
 ## Editing
 
 Project entries live in `src/pages/index.astro`. Each entry has a catalogue line, a short description, an optional engineering note, a facts list, and a figure. The calibration questions live in `src/scripts/calibration.js`.
+
+Engineering notes ship open so they print and read as part of the dossier. A small inline script collapses them before first paint on narrow screens, and a `beforeprint` handler reopens them so a collapsed note is never lost on paper. Clicking a figure opens the shared `<dialog>` lightbox; images fit the viewport, and clips play paused with native controls.
+
+Up to 980px the section rail is pinned as a top bar. Sections carry a negative `scroll-margin-top` equal to their padding, so an in-page jump lands the rail at the top, and the Contact section has a `min-height` so it can always be scrolled to the top (otherwise a jump on a tall viewport would leave the previous rail pinned).
 
 The year in the masthead and colophon comes from `src/lib/site.ts` at build time. Project years are written in the entries.
 
