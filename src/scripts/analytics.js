@@ -44,12 +44,18 @@
     }, 100);
   }
 
+  function eventName(url) {
+    var host = url.host.replace(/^www\./, "");
+    var path = url.pathname.replace(/\/+$/, "");
+    return "ext-" + host + path;
+  }
+
   function track(found) {
-    var host = found.url.host.replace(/^www\./, "");
     var title = (found.link.textContent || "").replace(/\s+/g, " ").trim();
+    var code = found.link.dataset.outbound || eventName(found.url);
 
     send({
-      path: "ext-" + host,
+      path: code,
       title: title || found.url.href,
       event: true
     });
