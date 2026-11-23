@@ -240,6 +240,9 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
                     <img src="/assets/img/projects/prism/cover.webp" width="1600" height="1000" alt="The Prism public directory, a table of animal charities with data source, beneficiary, cost, and audit columns." loading="lazy" decoding="async">
                   </div>
                   <figcaption><span>Fig. 03</span> The public directory. Each row links to a cited report card.</figcaption>
+                  <template data-plate-slides>
+                    <img src="/assets/img/projects/prism/report-card.webp" width="2000" height="1159" alt="A Prism report card for an animal charity: the Impact Equivalence Score, its calculation breakdown, and value-for-money figures." data-caption="A report card. Claimed impact is discounted by evidence quality, and every figure keeps a citation to its source.">
+                  </template>
                 </figure>
               </div>
             </article>
@@ -518,7 +521,22 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
       <button class="lightbox__close" type="button" data-lightbox-close aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="lightbox__stage" data-lightbox-stage></div>
+      <div class="lightbox__deck" data-lightbox-deck>
+        <button class="lightbox__arrow lightbox__arrow--prev" type="button" data-lightbox-prev aria-label="Previous image" hidden>
+          <span aria-hidden="true">&lsaquo;</span>
+        </button>
+        <div class="lightbox__stage" data-lightbox-stage></div>
+        <button class="lightbox__arrow lightbox__arrow--next" type="button" data-lightbox-next aria-label="Next image" hidden>
+          <span aria-hidden="true">&rsaquo;</span>
+        </button>
+      </div>
+      <div class="lightbox__bar" data-lightbox-bar hidden>
+        <p class="lightbox__count">
+          <span class="lightbox__dots" data-lightbox-dots aria-hidden="true"></span>
+          <span data-lightbox-count role="status" aria-live="polite"></span>
+        </p>
+        <p class="lightbox__hint" data-lightbox-hint aria-hidden="true"></p>
+      </div>
       <p class="lightbox__caption" data-lightbox-caption hidden></p>
     </dialog>
 

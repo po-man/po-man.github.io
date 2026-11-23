@@ -406,14 +406,28 @@
     var dialog = document.getElementById("lightbox");
     if (!dialog) return;
 
+    var deck = dialog.querySelector("[data-lightbox-deck]");
     var stage = dialog.querySelector("[data-lightbox-stage]");
     var caption = dialog.querySelector("[data-lightbox-caption]");
     var closeButton = dialog.querySelector("[data-lightbox-close]");
-    if (!stage || !caption || !closeButton) return;
+    var bar = dialog.querySelector("[data-lightbox-bar]");
+    var countEl = dialog.querySelector("[data-lightbox-count]");
+    var dotsEl = dialog.querySelector("[data-lightbox-dots]");
+    var hintEl = dialog.querySelector("[data-lightbox-hint]");
+    var prevButton = dialog.querySelector("[data-lightbox-prev]");
+    var nextButton = dialog.querySelector("[data-lightbox-next]");
+    if (!deck || !stage || !caption || !closeButton) return;
+    if (!bar || !countEl || !dotsEl || !hintEl || !prevButton || !nextButton) return;
 
     var canShowModal = typeof dialog.showModal === "function";
     var lastTrigger = null;
     var openClip = null;
+    var slides = [];
+    var index = 0;
+    var hintTimer = null;
+    var hintDismissed = false;
+    var touchStart = null;
+    var suppressStageClick = false;
 
     function labelOf(figure) {
       var mark = figure.querySelector("figcaption span");
@@ -431,6 +445,62 @@
       return clone.textContent.replace(/\s+/g, " ").trim();
     }
 
+    function sourceUrl(video) {
+      var source = video.querySelector("source");
+      return source ? source.src : video.currentSrc || video.src || "";
+    }
+
+    function slidesOf(figure) {
+      var media = figure.querySelector(".plate__media");
+      if (!media) return [];
+
+      var list = [];
+      var image = media.querySelector("img");
+      var video = media.querySelector("video");
+      var leadingCaption = captionOf(figure);
+
+      if (image) {
+        list.push({
+          type: "image",
+          src: image.currentSrc || image.src,
+          alt: image.alt || "",
+          caption: leadingCaption
+        });
+      } else if (video) {
+        list.push({
+          type: "video",
+          src: sourceUrl(video),
+          poster: video.poster || "",
+          caption: leadingCaption
+        });
+      } else {
+        return [];
+      }
+
+      var template = figure.querySelector("template[data-plate-slides]");
+      if (!template || !template.content) return list;
+
+      Array.prototype.forEach.call(template.content.querySelectorAll("img, video"), function (node) {
+        if (node.tagName === "VIDEO") {
+          list.push({
+            type: "video",
+            src: sourceUrl(node),
+            poster: node.poster || "",
+            caption: node.getAttribute("data-caption") || ""
+          });
+          return;
+        }
+        list.push({
+          type: "image",
+          src: node.getAttribute("src"),
+          alt: node.alt || "",
+          caption: node.getAttribute("data-caption") || node.alt || ""
+        });
+      });
+
+      return list;
+    }
+
     function stopClip() {
       if (openClip) {
         openClip.pause();
@@ -438,9 +508,129 @@
       }
     }
 
+    function clearHintTimer() {
+      if (hintTimer !== null) {
+        window.clearTimeout(hintTimer);
+        hintTimer = null;
+      }
+    }
+
+    function dismissHint() {
+      if (hintDismissed) return;
+      hintDismissed = true;
+      clearHintTimer();
+      hintEl.classList.add("is-dismissed");
+    }
+
+    function scheduleHint() {
+      clearHintTimer();
+      if (hintDismissed) return;
+      hintTimer = window.setTimeout(dismissHint, 4000);
+    }
+
+    function buildDots() {
+      dotsEl.textContent = "";
+      if (slides.length < 2) return;
+      for (var i = 0; i < slides.length; i++) {
+        var dot = document.createElement("span");
+        dot.className = "lightbox__dot";
+        dotsEl.appendChild(dot);
+      }
+    }
+
+    function syncChrome() {
+      var multi = slides.length > 1;
+      var focusWasNext = document.activeElement === nextButton;
+      var focusWasPrev = document.activeElement === prevButton;
+
+      dialog.classList.toggle("lightbox--gallery", multi);
+      dialog.classList.toggle("can-advance", multi && index < slides.length - 1);
+      bar.hidden = !multi;
+      prevButton.hidden = !multi || index === 0;
+      nextButton.hidden = !multi || index === slides.length - 1;
+      hintEl.hidden = !multi || index === slides.length - 1;
+
+      if (!multi) return;
+
+      countEl.textContent = index + 1 + " / " + slides.length;
+
+      var dots = dotsEl.children;
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle("is-current", i === index);
+      }
+
+      // A clicked arrow hides at the end of the run; keep keyboard focus in the
+      // dialog instead of dropping it back to the page.
+      if (focusWasNext && nextButton.hidden) {
+        (prevButton.hidden ? closeButton : prevButton).focus();
+      } else if (focusWasPrev && prevButton.hidden) {
+        (nextButton.hidden ? closeButton : nextButton).focus();
+      }
+    }
+
+    function renderSlide() {
+      var slide = slides[index];
+      if (!slide) return;
+
+      stopClip();
+      stage.textContent = "";
+
+      if (slide.type === "image") {
+        var big = document.createElement("img");
+        big.src = slide.src;
+        big.alt = slide.alt || "";
+        big.decoding = "async";
+        stage.appendChild(big);
+      } else {
+        var clip = document.createElement("video");
+        clip.controls = true;
+        clip.playsInline = true;
+        clip.preload = "metadata";
+        if (slide.poster) clip.poster = slide.poster;
+        if (slide.src) {
+          var child = document.createElement("source");
+          child.src = slide.src;
+          clip.appendChild(child);
+        }
+        stage.appendChild(clip);
+        openClip = clip;
+      }
+
+      caption.textContent = slide.caption;
+      caption.hidden = !slide.caption;
+      dialog.setAttribute("aria-label", slide.caption || "Figure");
+
+      syncChrome();
+    }
+
+    function goTo(next) {
+      if (slides.length < 2) return;
+      if (next < 0 || next > slides.length - 1 || next === index) return;
+
+      var media = stage.querySelector("video");
+      if (media && !media.paused) media.pause();
+
+      index = next;
+      renderSlide();
+      dismissHint();
+    }
+
     function teardown() {
       stage.textContent = "";
       stopClip();
+      clearHintTimer();
+      slides = [];
+      index = 0;
+      hintDismissed = false;
+      hintEl.classList.remove("is-dismissed");
+      hintEl.textContent = "";
+      dotsEl.textContent = "";
+      countEl.textContent = "";
+      dialog.classList.remove("lightbox--gallery");
+      dialog.classList.remove("can-advance");
+      bar.hidden = true;
+      prevButton.hidden = true;
+      nextButton.hidden = true;
       if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus();
     }
 
@@ -449,52 +639,35 @@
       teardown();
     }
 
-    function openLightbox(media, figure) {
-      var image = media.querySelector("img");
-      var video = media.querySelector("video");
-      if (!image && !video) return;
+    function openLightbox(figure) {
+      slides = slidesOf(figure);
+      if (!slides.length) return;
+      index = 0;
+      hintDismissed = false;
 
-      stopClip();
-      stage.textContent = "";
+      buildDots();
+      renderSlide();
 
-      if (image) {
-        var big = document.createElement("img");
-        big.src = image.currentSrc || image.src;
-        big.alt = image.alt || "";
-        big.decoding = "async";
-        stage.appendChild(big);
-      } else {
-        var source = video.querySelector("source");
-        var clip = document.createElement("video");
-        clip.controls = true;
-        clip.playsInline = true;
-        clip.preload = "metadata";
-        if (video.poster) clip.poster = video.poster;
-        if (source) {
-          var child = document.createElement("source");
-          child.src = source.src;
-          child.type = source.type;
-          clip.appendChild(child);
-        }
-        stage.appendChild(clip);
-        openClip = clip;
-        if (!video.paused) video.pause();
-      }
-
-      var text = captionOf(figure);
-      caption.textContent = text;
-      caption.hidden = !text;
-      dialog.setAttribute("aria-label", labelOf(figure) + (text ? ". " + text : ""));
+      if (hintEl.hidden === false) scheduleHint();
 
       if (!canShowModal) {
-        var sourceEl = video ? video.querySelector("source") : null;
-        var fallback = image ? image.currentSrc || image.src : sourceEl ? sourceEl.src : "";
+        var first = slides[0];
+        var fallback = first.type === "image" ? first.src : first.src;
         if (fallback) window.open(fallback, "_blank", "noopener");
+        teardown();
         return;
       }
 
       if (!dialog.open) dialog.showModal();
       closeButton.focus();
+
+      // Warm the next frame so the first swipe or click is instant.
+      for (var i = 1; i < slides.length; i++) {
+        if (slides[i].type === "image") {
+          var preload = new Image();
+          preload.src = slides[i].src;
+        }
+      }
     }
 
     Array.prototype.forEach.call(document.querySelectorAll(".plate"), function (figure) {
@@ -509,7 +682,7 @@
 
       function activate() {
         lastTrigger = media;
-        openLightbox(media, figure);
+        openLightbox(figure);
       }
 
       media.addEventListener("click", activate);
@@ -522,6 +695,66 @@
     });
 
     closeButton.addEventListener("click", closeLightbox);
+    prevButton.addEventListener("click", function () {
+      goTo(index - 1);
+    });
+    nextButton.addEventListener("click", function () {
+      goTo(index + 1);
+    });
+
+    // On desktop the stage itself advances the gallery, so "Click" is literal.
+    stage.addEventListener("click", function (event) {
+      if (slides.length < 2) return;
+      if (suppressStageClick) return;
+      if (index >= slides.length - 1) return;
+      if (event.target.closest("video, button, a")) return;
+      goTo(index + 1);
+    });
+
+    dialog.addEventListener("keydown", function (event) {
+      if (slides.length < 2) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goTo(index + 1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goTo(index - 1);
+      }
+    });
+
+    // Swipe: horizontal only, so a vertical drag still scrolls the page.
+    deck.addEventListener(
+      "touchstart",
+      function (event) {
+        if (slides.length < 2) return;
+        var touch = event.changedTouches[0];
+        touchStart = { x: touch.clientX, y: touch.clientY };
+      },
+      { passive: true }
+    );
+
+    deck.addEventListener(
+      "touchend",
+      function (event) {
+        if (!touchStart || slides.length < 2) return;
+        var touch = event.changedTouches[0];
+        var dx = touch.clientX - touchStart.x;
+        var dy = touch.clientY - touchStart.y;
+        touchStart = null;
+
+        if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+        if (event.target.closest("video")) return;
+
+        // A swipe also emits a click; eat it so the gallery does not advance twice.
+        suppressStageClick = true;
+        window.setTimeout(function () {
+          suppressStageClick = false;
+        }, 400);
+
+        goTo(dx < 0 ? index + 1 : index - 1);
+      },
+      { passive: true }
+    );
 
     dialog.addEventListener("click", function (event) {
       if (event.target !== dialog) return;
