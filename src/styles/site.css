@@ -1096,6 +1096,182 @@ textarea {
   line-height: 1.6;
 }
 
+.lightbox__deck {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A gallery keeps one frame across slides, so the arrows sit on the lightbox
+   edge instead of tracking the width of whichever image is showing. */
+.lightbox--gallery {
+  width: min(96vw, calc(78vh * 8 / 5));
+}
+
+.lightbox--gallery .lightbox__deck {
+  width: 100%;
+}
+
+.lightbox--gallery .lightbox__stage {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: min(78vh, calc(96vh - 5.5rem));
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.lightbox--gallery .lightbox__stage img,
+.lightbox--gallery .lightbox__stage video {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+/* Two caption lines are reserved so a longer caption does not resize the
+   frame, which would move the arrows between slides. */
+.lightbox--gallery .lightbox__caption {
+  max-width: none;
+  min-height: 2.8rem;
+}
+
+.lightbox--gallery:not(.can-advance) .lightbox__stage {
+  cursor: default;
+}
+
+.lightbox__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 1px solid var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  line-height: 1;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.lightbox__arrow[hidden] {
+  display: none;
+}
+
+.lightbox__arrow--prev {
+  left: 0;
+  border-left: 0;
+}
+
+.lightbox__arrow--next {
+  right: 0;
+  border-right: 0;
+}
+
+.lightbox__arrow:hover,
+.lightbox__arrow:focus-visible {
+  background: var(--ink);
+  color: #fff;
+}
+
+.lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 1rem;
+  border-top: 1px solid var(--rule);
+  background: #fff;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.lightbox__bar[hidden] {
+  display: none;
+}
+
+.lightbox__count {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.lightbox__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.lightbox__dot {
+  width: 0.32rem;
+  height: 0.32rem;
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+}
+
+.lightbox__dot.is-current {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.lightbox__hint {
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+
+.lightbox__hint[hidden] {
+  display: none;
+}
+
+.lightbox__hint::before {
+  content: "Click \2192";
+}
+
+.lightbox__hint.is-dismissed {
+  opacity: 0;
+}
+
+@media (pointer: coarse) {
+  .lightbox__hint::before {
+    content: "Swipe \2192";
+  }
+}
+
+@media (max-width: 700px) {
+  .lightbox__arrow {
+    width: 2.1rem;
+    height: 2.8rem;
+    font-size: 1.35rem;
+  }
+
+  .lightbox__bar {
+    padding-inline: 0.75rem;
+  }
+
+  .lightbox__bar + .lightbox__caption {
+    padding-inline: 0.75rem;
+  }
+}
+
+.lightbox__bar + .lightbox__caption {
+  border-top: 0;
+  padding-top: 0.15rem;
+}
+
 .lightbox__close {
   position: absolute;
   top: 0;

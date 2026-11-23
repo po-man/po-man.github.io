@@ -60,7 +60,7 @@ contact-form/              Apps Script endpoint and deployment notes
 
 Project entries live in `src/pages/index.astro`. Each entry has a catalogue line, a short description, an optional engineering note, a facts list, and a figure. The calibration questions live in `src/scripts/calibration.js`.
 
-Engineering notes ship open so they print and read as part of the dossier. A small inline script collapses them before first paint on narrow screens, and a `beforeprint` handler reopens them so a collapsed note is never lost on paper. Clicking a figure opens the shared `<dialog>` lightbox; images fit the viewport, and clips play paused with native controls.
+Engineering notes ship open so they print and read as part of the dossier. A small inline script collapses them before first paint on narrow screens, and a `beforeprint` handler reopens them so a collapsed note is never lost on paper. Clicking a figure opens the shared `<dialog>` lightbox; images fit the viewport, and clips play paused with native controls. A figure that carries a `<template data-plate-slides>` becomes a small gallery: arrows, a slide count, and swipe or click navigation in the lightbox, with a caption per slide. Every other figure keeps the single-image view.
 
 Up to 980px the section rail is pinned as a top bar. Sections carry a negative `scroll-margin-top` equal to their padding, so an in-page jump lands the rail at the top, and the Contact section has a `min-height` so it can always be scrolled to the top (otherwise a jump on a tall viewport would leave the previous rail pinned).
 
