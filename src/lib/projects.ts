@@ -53,8 +53,16 @@ export const projects: Project[] = [
     status: "Live"
   },
   {
-    id: "hen-escape",
+    id: "bellwether",
     no: "06",
+    name: "Bellwether",
+    thread: "Campaigns",
+    year: "2026",
+    status: "Live"
+  },
+  {
+    id: "hen-escape",
+    no: "07",
     name: "Hen Escape",
     thread: "Campaigns",
     year: "2025",
@@ -62,7 +70,7 @@ export const projects: Project[] = [
   },
   {
     id: "rabbitry",
-    no: "07",
+    no: "08",
     name: "Rabbitry",
     thread: "Campaigns",
     year: "2026",

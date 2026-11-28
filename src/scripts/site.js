@@ -627,6 +627,7 @@
       dotsEl.textContent = "";
       countEl.textContent = "";
       dialog.classList.remove("lightbox--gallery");
+      dialog.classList.remove("lightbox--portrait");
       dialog.classList.remove("can-advance");
       bar.hidden = true;
       prevButton.hidden = true;
@@ -644,6 +645,7 @@
       if (!slides.length) return;
       index = 0;
       hintDismissed = false;
+      dialog.classList.toggle("lightbox--portrait", figure.classList.contains("plate--portrait"));
 
       buildDots();
       renderSlide();

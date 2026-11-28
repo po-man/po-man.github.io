@@ -645,10 +645,6 @@ textarea {
   background: #151515;
 }
 
-.plate__media--portrait.plate__media--clip {
-  aspect-ratio: 9 / 16;
-}
-
 .plate__media--clip:not(.plate__media--portrait) {
   aspect-ratio: auto;
 }
@@ -672,7 +668,7 @@ textarea {
 .plate__media--portrait {
   width: min(100%, 23rem);
   margin-inline: auto;
-  aspect-ratio: 1 / 2;
+  aspect-ratio: 9 / 16;
 }
 
 .plate--portrait figcaption {
@@ -1109,6 +1105,10 @@ textarea {
   width: min(96vw, calc(78vh * 8 / 5));
 }
 
+.lightbox--gallery.lightbox--portrait {
+  width: min(96vw, calc(78vh * 9 / 16));
+}
+
 .lightbox--gallery .lightbox__deck {
   width: 100%;
 }
@@ -1119,6 +1119,10 @@ textarea {
   max-height: min(78vh, calc(96vh - 5.5rem));
   cursor: pointer;
   touch-action: pan-y;
+}
+
+.lightbox--gallery.lightbox--portrait .lightbox__stage {
+  aspect-ratio: 9 / 16;
 }
 
 .lightbox--gallery .lightbox__stage img,
