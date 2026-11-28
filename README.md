@@ -44,8 +44,9 @@ Setup and deployment notes are in `contact-form/README.md`. The script lives in 
 ```text
 astro.config.mjs           Astro configuration
 src/lib/site.ts            Site metadata and the build year
+src/lib/projects.ts        Project index: order, number, thread, year, status
 src/layouts/Base.astro     Document shell and social metadata
-src/pages/index.astro      Masthead, index, seven projects, notes, contact
+src/pages/index.astro      Masthead, index, project entries, notes, contact
 src/pages/calibration/     Field test: twenty questions, curve, Brier score
 src/pages/404.astro        Not-found page
 src/pages/calibration-exercise-demo/
@@ -58,13 +59,13 @@ contact-form/              Apps Script endpoint and deployment notes
 
 ## Editing
 
-Project entries live in `src/pages/index.astro`. Each entry has a catalogue line, a short description, an optional engineering note, a facts list, and a figure. The calibration questions live in `src/scripts/calibration.js`.
+The index rows and the entry count come from `src/lib/projects.ts`; add a project there and write its article in `src/pages/index.astro`. Keep the article's `No.` and `Fig.` labels in step with the catalogue. Each entry has a short description, an optional engineering note, a facts list, and a figure. The calibration questions live in `src/scripts/calibration.js`.
 
 Engineering notes ship open so they print and read as part of the dossier. A small inline script collapses them before first paint on narrow screens, and a `beforeprint` handler reopens them so a collapsed note is never lost on paper. Clicking a figure opens the shared `<dialog>` lightbox; images fit the viewport, and clips play paused with native controls. A figure that carries a `<template data-plate-slides>` becomes a small gallery: arrows, a slide count, and swipe or click navigation in the lightbox, with a caption per slide. Every other figure keeps the single-image view.
 
 Up to 980px the section rail is pinned as a top bar. Sections carry a negative `scroll-margin-top` equal to their padding, so an in-page jump lands the rail at the top, and the Contact section has a `min-height` so it can always be scrolled to the top (otherwise a jump on a tall viewport would leave the previous rail pinned).
 
-The year in the masthead and colophon comes from `src/lib/site.ts` at build time. Project years are written in the entries.
+The year in the masthead and colophon comes from `src/lib/site.ts` at build time. Project years are written in `src/lib/projects.ts` and in the article metadata.
 
 ## Analytics
 

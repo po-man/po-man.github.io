@@ -1,9 +1,11 @@
 ---
 import Base from "../layouts/Base.astro";
+import { projects } from "../lib/projects";
 import { year } from "../lib/site";
 import "../styles/site.css";
 
 const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
+const projectCount = projects.length.toString().padStart(2, "0");
 ---
 <Base
   title="Po Man, software engineer"
@@ -55,76 +57,24 @@ const endpoint = process.env.CONTACT_FORM_ENDPOINT ?? "";
         <div class="section-grid">
           <div class="section-rail">
             <span class="mono">Index</span>
-            <span class="mono section-rail__note">07 entries</span>
+            <span class="mono section-rail__note">{projectCount} entries</span>
           </div>
           <div class="section-body">
             <h2 class="visually-hidden" id="index-title">Project index</h2>
             <ol class="index-list">
-              <li>
-                <a href="#meerkat">
-                  <span class="index-no">01</span>
-                  <span class="index-name">Meerkat</span>
-                  <span class="index-thread">Systems</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">By request</span>
-                </a>
-              </li>
-              <li>
-                <a href="#mantis">
-                  <span class="index-no">02</span>
-                  <span class="index-name">Mantis</span>
-                  <span class="index-thread">Systems</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">Gallery</span>
-                </a>
-              </li>
-              <li>
-                <a href="#prism">
-                  <span class="index-no">03</span>
-                  <span class="index-name">Prism</span>
-                  <span class="index-thread">Systems</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">Reports</span>
-                </a>
-              </li>
-              <li>
-                <a href="#waste">
-                  <span class="index-no">04</span>
-                  <span class="index-name">Waste</span>
-                  <span class="index-thread">Products</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">Live</span>
-                </a>
-              </li>
-              <li>
-                <a href="#botanibowl">
-                  <span class="index-no">05</span>
-                  <span class="index-name">BotaniBowl</span>
-                  <span class="index-thread">Products</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">Live</span>
-                </a>
-              </li>
-              <li>
-                <a href="#hen-escape">
-                  <span class="index-no">06</span>
-                  <span class="index-name">Hen Escape</span>
-                  <span class="index-thread">Campaigns</span>
-                  <span class="index-year">2025</span>
-                  <span class="index-status">Live</span>
-                </a>
-              </li>
-              <li>
-                <a href="#rabbitry">
-                  <span class="index-no">07</span>
-                  <span class="index-name">Rabbitry</span>
-                  <span class="index-thread">Campaigns</span>
-                  <span class="index-year">2026</span>
-                  <span class="index-status">Live</span>
-                </a>
-              </li>
+              {projects.map((project) => (
+                <li>
+                  <a href={`#${project.id}`}>
+                    <span class="index-no">{project.no}</span>
+                    <span class="index-name">{project.name}</span>
+                    <span class="index-thread">{project.thread}</span>
+                    <span class="index-year">{project.year}</span>
+                    <span class="index-status">{project.status}</span>
+                  </a>
+                </li>
+              ))}
             </ol>
-            <p class="index-foot mono">All seven entries are below. Status describes what is public, not what is finished.</p>
+            <p class="index-foot mono">All entries are below. Status describes what is public, not what is finished.</p>
           </div>
         </div>
       </section>
